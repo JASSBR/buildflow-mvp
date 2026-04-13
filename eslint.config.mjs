@@ -3,7 +3,7 @@ import typescriptEslint from '@typescript-eslint/eslint-plugin';
 import typescriptParser from '@typescript-eslint/parser';
 import nextCoreWebVitals from 'eslint-config-next/core-web-vitals';
 
-export default [
+const eslintConfig = [
   {
     ignores: [
       '.next/**',
@@ -73,3 +73,5 @@ export default [
     },
   },
 ];
+
+export default eslintConfig;
