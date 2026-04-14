@@ -3,7 +3,7 @@ import { createServerComponentClient } from '@supabase/auth-helpers-nextjs'
 import { cookies } from 'next/headers'
 import { Octokit } from '@octokit/rest'
 
-export async function GET(request: NextRequest) {
+export async function GET(_request: NextRequest) {
   try {
     const supabase = createServerComponentClient({ cookies })
 
@@ -59,7 +59,7 @@ export async function GET(request: NextRequest) {
             workflows_count: workflows.total_count,
           })
         }
-      } catch (workflowError) {
+      } catch {
         // Skip repositories where we can't access workflows
         continue
       }

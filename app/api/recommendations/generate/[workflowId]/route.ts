@@ -163,10 +163,11 @@ on:
 
 export async function POST(
   request: NextRequest,
-  { params }: { params: { workflowId: string } }
+  { params }: { params: Promise<{ workflowId: string }> }
 ) {
   try {
     const supabase = createServerComponentClient({ cookies })
+    const { workflowId } = await params
 
     // Get the authenticated user
     const { data: { session }, error: authError } = await supabase.auth.getSession()
@@ -184,7 +185,7 @@ export async function POST(
           full_name
         )
       `)
-      .eq('id', params.workflowId)
+      .eq('id', workflowId)
       .single()
 
     if (workflowError || !workflow) {
@@ -219,7 +220,7 @@ export async function POST(
 
     for (const rec of recommendations) {
       // Check if similar recommendation already exists
-      const { data: existingRec, error: checkError } = await supabase
+      const { data: existingRec, error: _checkError } = await supabase
         .from('recommendations')
         .select('id')
         .eq('workflow_id', workflow.id)
@@ -291,10 +292,11 @@ export async function POST(
 
 export async function GET(
   request: NextRequest,
-  { params }: { params: { workflowId: string } }
+  { params }: { params: Promise<{ workflowId: string }> }
 ) {
   try {
     const supabase = createServerComponentClient({ cookies })
+    const { workflowId } = await params
 
     // Get the authenticated user
     const { data: { session }, error: authError } = await supabase.auth.getSession()
@@ -315,7 +317,7 @@ export async function GET(
           )
         )
       `)
-      .eq('workflow_id', params.workflowId)
+      .eq('workflow_id', workflowId)
       .order('priority', { ascending: true })
       .order('created_at', { ascending: false })
 

@@ -4,8 +4,9 @@ import { cookies } from 'next/headers'
 
 export async function PATCH(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
+  const { id } = await params;
   try {
     const supabase = createServerComponentClient({ cookies })
     const body = await request.json()
@@ -30,7 +31,7 @@ export async function PATCH(
           )
         )
       `)
-      .eq('id', params.id)
+      .eq('id', id)
       .single()
 
     if (recError || !recommendation) {
@@ -70,7 +71,7 @@ export async function PATCH(
     const { data: updatedRecommendation, error: updateError } = await supabase
       .from('recommendations')
       .update(updateData)
-      .eq('id', params.id)
+      .eq('id', id)
       .select()
       .single()
 
@@ -94,8 +95,9 @@ export async function PATCH(
 
 export async function GET(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
+  const { id } = await params;
   try {
     const supabase = createServerComponentClient({ cookies })
 
@@ -123,7 +125,7 @@ export async function GET(
           )
         )
       `)
-      .eq('id', params.id)
+      .eq('id', id)
       .single()
 
     if (recError || !recommendation) {
@@ -151,8 +153,9 @@ export async function GET(
 
 export async function DELETE(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
+  const { id } = await params;
   try {
     const supabase = createServerComponentClient({ cookies })
 
@@ -173,7 +176,7 @@ export async function DELETE(
           )
         )
       `)
-      .eq('id', params.id)
+      .eq('id', id)
       .single()
 
     if (recError || !recommendation) {

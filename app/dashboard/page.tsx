@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { createClientComponentClient } from '@supabase/auth-helpers-nextjs';
 
 interface Repository {
@@ -52,7 +52,7 @@ export default function Dashboard() {
 
   useEffect(() => {
     checkUser();
-  }, []);
+  }, [checkUser]);
 
   useEffect(() => {
     if (user) {
@@ -60,7 +60,7 @@ export default function Dashboard() {
     }
   }, [user]);
 
-  const checkUser = async () => {
+  const checkUser = useCallback(async () => {
     try {
       const { data: { session }, error } = await supabase.auth.getSession();
       if (error) {
@@ -79,7 +79,7 @@ export default function Dashboard() {
     } finally {
       setLoading(false);
     }
-  };
+  }, [supabase, setUser, setLoading]);
 
   const fetchConnectedRepositories = async () => {
     try {
