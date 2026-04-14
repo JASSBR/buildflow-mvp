@@ -118,10 +118,10 @@ GITHUB_PERSONAL_ACCESS_TOKEN=your_github_pat
 - ✅ Basic landing page
 
 ### Phase 2 (Week 2): Core Analysis
-- [ ] GitHub Actions API integration
-- [ ] Workflow discovery and parsing  
-- [ ] Build time analysis engine
-- [ ] Recommendations generation
+- ✅ GitHub Actions API integration (`/api/github/repositories`)
+- ✅ Workflow discovery and parsing (`/api/github/workflows/[repositoryId]`)
+- ✅ Build time analysis engine (`/api/github/workflow-runs/[workflowId]`)
+- ✅ Recommendations generation (`/api/recommendations/generate/[workflowId]`, `/api/recommendations/[id]`)
 
 ### Phase 3 (Week 3): Dashboard & UX
 - [ ] User dashboard with repository overview
@@ -154,7 +154,7 @@ This is an MVP project. Development priorities:
 
 ## 📝 License
 
-Private project - All rights reserved.
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
 
 ---
 
