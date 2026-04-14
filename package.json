@@ -1,7 +1,6 @@
 {
   "name": "buildflow-mvp",
   "version": "0.1.0",
-  "private": true,
   "type": "module",
   "description": "AI-powered CI/CD optimization platform - MVP",
   "scripts": {
@@ -9,7 +8,10 @@
     "build": "next build",
     "start": "next start",
     "lint": "eslint .",
-    "type-check": "tsc --noEmit"
+    "type-check": "tsc --noEmit",
+    "test": "jest",
+    "test:watch": "jest --watch",
+    "test:ci": "jest --ci --coverage --watchAll=false"
   },
   "dependencies": {
     "@octokit/rest": "^20.0.2",
@@ -26,8 +28,14 @@
     "@types/node": "^20.11.0",
     "@types/react": "^18.2.48",
     "@types/react-dom": "^18.2.18",
+    "@testing-library/react": "^14.1.2",
+    "@testing-library/jest-dom": "^6.1.5",
+    "@testing-library/user-event": "^14.5.1",
     "eslint": "^9.39.0",
     "eslint-config-next": "^16.2.3",
+    "jest": "^29.7.0",
+    "jest-environment-jsdom": "^29.7.0",
+    "@types/jest": "^29.5.8",
     "typescript": "^5.3.3"
   },
   "keywords": [
