@@ -99,7 +99,44 @@ npm start
 
 ## 🚀 Deployment
 
-### Automated Deployment (Recommended)
+### Quick Deployment with Railway (New - Immediate Option)
+
+**⚡ For immediate deployment without complex token setup:**
+
+1. **Connect to Railway:**
+   - Visit [railway.app](https://railway.app) 
+   - Sign in with GitHub
+   - Click "New Project" → "Deploy from GitHub repo"
+   - Select `JASSBR/buildflow-mvp` repository
+
+2. **Automatic Configuration:**
+   - Railway auto-detects `railway.toml` configuration
+   - Uses Nixpacks for optimized Node.js builds
+   - Provides instant HTTPS domain (`*.railway.app`)
+
+3. **Environment Variables in Railway:**
+   ```bash
+   NODE_ENV=production
+   NEXT_TELEMETRY_DISABLED=1
+   
+   # Add when ready:
+   NEXT_PUBLIC_SUPABASE_URL=your_supabase_url
+   NEXT_PUBLIC_SUPABASE_ANON_KEY=your_supabase_anon_key
+   GITHUB_CLIENT_ID=your_github_oauth_client_id
+   GITHUB_CLIENT_SECRET=your_github_oauth_client_secret
+   NEXTAUTH_SECRET=your_nextauth_secret
+   ```
+
+4. **Deploy:** Push to main branch triggers automatic deployment
+
+**⭐ Benefits:**
+- ✅ No complex token configuration required
+- ✅ 5-minute setup from repository to live URL
+- ✅ Automatic SSL certificates
+- ✅ GitHub integration out-of-the-box
+- ✅ Can migrate to Vercel later without code changes
+
+### Automated Deployment (Traditional)
 
 The project uses **GitHub Actions + Vercel** for automated deployments:
 
