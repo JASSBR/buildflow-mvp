@@ -3,6 +3,9 @@
 import { useState, useEffect, useCallback } from 'react';
 import { createClientComponentClient } from '@supabase/auth-helpers-nextjs';
 
+// Disable static generation for this page since it requires client-side authentication
+export const dynamic = 'force-dynamic';
+
 interface Repository {
   id: string;
   github_repo_id: number;
