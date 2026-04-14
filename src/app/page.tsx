@@ -29,7 +29,7 @@ export default function HomePage() {
         if (event === 'SIGNED_IN' && session?.user) {
           // Create or update user profile
           const userMetadata = session.user.user_metadata
-          await supabase.from('profiles').upsert({
+          await (supabase as any).from('profiles').upsert({
             id: session.user.id,
             github_id: userMetadata?.user_id,
             email: session.user.email,

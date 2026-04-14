@@ -1,8 +1,9 @@
 import { createClientComponentClient } from '@supabase/auth-helpers-nextjs'
 import { createServerComponentClient } from '@supabase/auth-helpers-nextjs'
 import { cookies } from 'next/headers'
+import { Database } from './supabase-types'
 
-export type Database = {
+const duplicateTypes = {
   public: {
     Tables: {
       profiles: {
@@ -201,12 +202,12 @@ export type Database = {
 }
 
 // Type-safe client creation with explicit return typing
-export const createSupabaseClient = (): ReturnType<typeof createClientComponentClient<Database>> => {
+export const createSupabaseClient = () => {
   return createClientComponentClient<Database>()
 }
 
 // Server-side Supabase client with explicit typing
-export const createSupabaseServer = (): ReturnType<typeof createServerComponentClient<Database>> => {
+export const createSupabaseServer = () => {
   return createServerComponentClient<Database>({ cookies })
 }
 
