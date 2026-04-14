@@ -8,6 +8,7 @@ export async function GET(
   { params }: { params: Promise<{ workflowId: string }> }
 ) {
   try {
+    const { workflowId } = await params
     const supabase = createServerComponentClient({ cookies })
 
     // Get the authenticated user
@@ -27,7 +28,7 @@ export async function GET(
           github_repo_id
         )
       `)
-      .eq('id', params.workflowId)
+      .eq('id', workflowId)
       .single()
 
     if (workflowError || !workflow) {

@@ -50,16 +50,6 @@ export default function Dashboard() {
 
   const supabase = createClientComponentClient();
 
-  useEffect(() => {
-    checkUser();
-  }, [checkUser]);
-
-  useEffect(() => {
-    if (user) {
-      fetchConnectedRepositories();
-    }
-  }, [user]);
-
   const checkUser = useCallback(async () => {
     try {
       const { data: { session }, error } = await supabase.auth.getSession();
@@ -80,6 +70,16 @@ export default function Dashboard() {
       setLoading(false);
     }
   }, [supabase, setUser, setLoading]);
+
+  useEffect(() => {
+    checkUser();
+  }, [checkUser]);
+
+  useEffect(() => {
+    if (user) {
+      fetchConnectedRepositories();
+    }
+  }, [user]);
 
   const fetchConnectedRepositories = async () => {
     try {
