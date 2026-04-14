@@ -88,6 +88,23 @@ jobs:
           vercel-args: '--prod'
           scope: ${{ secrets.VERCEL_ORG_ID }}
 
+  deploy-railway-production:
+    name: Deploy to Railway (Alternative)
+    runs-on: ubuntu-latest
+    needs: [lint-and-type-check, build]
+    if: github.ref == 'refs/heads/main'
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Deploy to Railway
+        uses: railwayapp/cli@v3
+        with:
+          command: railway up --service buildflow-mvp
+        env:
+          RAILWAY_TOKEN: ${{ secrets.RAILWAY_TOKEN }}
+        continue-on-error: true
+
   security-scan:
     name: Security Scan
     runs-on: ubuntu-latest
