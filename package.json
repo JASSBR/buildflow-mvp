@@ -2,6 +2,7 @@
   "name": "buildflow-mvp",
   "version": "0.1.0",
   "private": true,
+  "type": "module",
   "description": "AI-powered CI/CD optimization platform - MVP",
   "scripts": {
     "dev": "next dev",
