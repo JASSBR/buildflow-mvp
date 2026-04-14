@@ -8,23 +8,23 @@ const duplicateTypes = {
     Tables: {
       profiles: {
         Row: {
-          id: string
-          github_id: number | null
-          email: string | null
-          name: string | null
-          avatar_url: string | null
-          github_username: string | null
-          created_at: string
+          id: string,
+          github_id: number | null,
+          email: string | null,
+          name: string | null,
+          avatar_url: string | null,
+          github_username: string | null,
+          created_at: string,
           updated_at: string
-        }
+        },
         Insert: {
-          id: string
-          github_id?: number | null
-          email?: string | null
-          name?: string | null
-          avatar_url?: string | null
-          github_username?: string | null
-          created_at?: string
+          id: string,
+          github_id?: number | null,
+          email?: string | null,
+          name?: string | null,
+          avatar_url?: string | null,
+          github_username?: string | null,
+          created_at?: string,
           updated_at?: string
         }
         Update: {
