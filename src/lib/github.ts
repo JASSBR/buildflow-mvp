@@ -174,7 +174,7 @@ export class GitHubClient {
     try {
       const workflows = await this.getRepositoryWorkflows(owner, repo);
       return workflows.length > 0;
-    } catch (error) {
+    } catch {
       return false; // If we can't access workflows, assume no workflows
     }
   }

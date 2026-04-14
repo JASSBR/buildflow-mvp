@@ -3,7 +3,7 @@ import { createGitHubClient } from '@/lib/github';
 import { createRouteHandlerClient } from '@supabase/auth-helpers-nextjs';
 import { cookies } from 'next/headers';
 
-export async function GET(request: NextRequest) {
+export async function GET(_request: NextRequest) {
   try {
     // Initialize Supabase client
     const supabase = createRouteHandlerClient({ cookies });
