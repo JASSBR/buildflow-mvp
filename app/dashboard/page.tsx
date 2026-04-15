@@ -218,7 +218,10 @@ export default function Dashboard() {
           <h1 className="text-2xl font-bold mb-4">Please sign in</h1>
           <p className="text-gray-600 mb-8">You need to be authenticated to access the dashboard.</p>
           <button
-            onClick={() => supabase.auth.signInWithOAuth({ provider: 'github' })}
+            onClick={() => supabase.auth.signInWithOAuth({
+              provider: 'github',
+              options: { redirectTo: `${window.location.origin}/auth/callback` },
+            })}
             className="bg-gray-900 text-white px-6 py-2 rounded-lg hover:bg-gray-800"
           >
             Sign in with GitHub
