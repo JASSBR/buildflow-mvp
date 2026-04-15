@@ -2,6 +2,7 @@
 
 import { useState, useEffect, useCallback } from 'react';
 import { createClientComponentClient } from '@supabase/auth-helpers-nextjs';
+import { trackUserFunnel, trackPagePerformance as _trackPagePerformance, trackError as _trackError } from '../components/GoogleAnalytics';
 
 // Disable static generation for this page since it requires client-side authentication
 export const dynamic = 'force-dynamic';
@@ -50,6 +51,7 @@ export default function Dashboard() {
   const [loading, setLoading] = useState(true);
   const [connectingRepo, setConnectingRepo] = useState<number | null>(null);
   const [generatingRecs, setGeneratingRecs] = useState<string>('');
+  const [updatingRecommendation, setUpdatingRecommendation] = useState<string>('');
 
   const supabase = createClientComponentClient();
 
@@ -63,6 +65,8 @@ export default function Dashboard() {
 
       if (session) {
         setUser(session.user);
+        trackUserFunnel.authSuccess();
+        trackUserFunnel.dashboardView();
       } else {
         // Redirect to login or show login component
         console.log('No user session found');
@@ -162,6 +166,37 @@ export default function Dashboard() {
       console.error('Error generating recommendations:', error);
     } finally {
       setGeneratingRecs('');
+    }
+  };
+
+  const updateRecommendationStatus = async (recommendationId: string, status: string) => {
+    setUpdatingRecommendation(recommendationId);
+
+    try {
+      const response = await fetch(`/api/recommendations/${recommendationId}`, {
+        method: 'PATCH',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ status }),
+      });
+
+      if (response.ok) {
+        // Update the recommendation in the local state
+        setRecommendations(prev =>
+          prev.map(rec =>
+            rec.id === recommendationId
+              ? { ...rec, status }
+              : rec
+          )
+        );
+      } else {
+        console.error('Failed to update recommendation status');
+      }
+    } catch (error) {
+      console.error('Error updating recommendation:', error);
+    } finally {
+      setUpdatingRecommendation('');
     }
   };
 
@@ -338,6 +373,17 @@ export default function Dashboard() {
                         }`}>
                           {rec.priority === 1 ? 'High' : rec.priority === 2 ? 'Medium' : 'Low'} Priority
                         </span>
+                        {rec.status && rec.status !== 'pending' && (
+                          <span className={`px-2 py-1 rounded-full text-xs font-medium ${
+                            rec.status === 'implemented' ? 'bg-green-100 text-green-800' :
+                            rec.status === 'dismissed' ? 'bg-gray-100 text-gray-600' :
+                            'bg-yellow-100 text-yellow-800'
+                          }`}>
+                            {rec.status === 'implemented' ? 'Implemented' :
+                             rec.status === 'dismissed' ? 'Dismissed' :
+                             rec.status}
+                          </span>
+                        )}
                       </div>
                     </div>
                     {rec.potential_savings > 0 && (
@@ -364,11 +410,19 @@ export default function Dashboard() {
                   </details>
 
                   <div className="flex space-x-3">
-                    <button className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700">
-                      Mark as Implemented
+                    <button
+                      onClick={() => updateRecommendationStatus(rec.id, 'implemented')}
+                      disabled={updatingRecommendation === rec.id}
+                      className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed"
+                    >
+                      {updatingRecommendation === rec.id ? 'Updating...' : 'Mark as Implemented'}
                     </button>
-                    <button className="bg-gray-300 text-gray-700 px-4 py-2 rounded hover:bg-gray-400">
-                      Dismiss
+                    <button
+                      onClick={() => updateRecommendationStatus(rec.id, 'dismissed')}
+                      disabled={updatingRecommendation === rec.id}
+                      className="bg-gray-300 text-gray-700 px-4 py-2 rounded hover:bg-gray-400 disabled:opacity-50 disabled:cursor-not-allowed"
+                    >
+                      {updatingRecommendation === rec.id ? 'Updating...' : 'Dismiss'}
                     </button>
                   </div>
                 </div>
