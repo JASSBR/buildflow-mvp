@@ -61,3 +61,23 @@ export const trackConversion = (
     })
   }
 }
+
+// User funnel tracking helpers
+export const trackUserFunnel = {
+  landingView: () => trackEvent('landing_view', 'funnel'),
+  authStart: () => trackEvent('auth_start', 'funnel'),
+  authSuccess: () => trackEvent('auth_success', 'funnel'),
+  dashboardView: () => trackEvent('dashboard_view', 'funnel'),
+  repositoryConnect: () => trackEvent('repository_connect', 'funnel'),
+  recommendationGenerated: () => trackEvent('recommendation_generated', 'funnel'),
+}
+
+// Page performance tracking
+export const trackPagePerformance = (pageName: string, durationMs: number) => {
+  trackEvent('page_performance', 'performance', pageName, Math.round(durationMs))
+}
+
+// Error tracking
+export const trackError = (message: string, context?: string) => {
+  trackEvent('error', 'error', context ? `${context}: ${message}` : message)
+}
