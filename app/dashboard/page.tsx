@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useEffect, useCallback } from 'react';
-import { createClientComponentClient } from '@supabase/auth-helpers-nextjs';
+import { createBrowserClient } from '@supabase/ssr';
 import { trackUserFunnel, trackPagePerformance as _trackPagePerformance, trackError as _trackError } from '../components/GoogleAnalytics';
 
 // Disable static generation for this page since it requires client-side authentication
@@ -53,7 +53,10 @@ export default function Dashboard() {
   const [generatingRecs, setGeneratingRecs] = useState<string>('');
   const [updatingRecommendation, setUpdatingRecommendation] = useState<string>('');
 
-  const supabase = createClientComponentClient();
+  const supabase = createBrowserClient(
+    process.env.NEXT_PUBLIC_SUPABASE_URL!,
+    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
+  );
 
   const checkUser = useCallback(async () => {
     try {
