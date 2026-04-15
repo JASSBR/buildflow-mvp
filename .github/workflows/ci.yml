@@ -68,9 +68,11 @@ jobs:
       - name: Build application
         run: npm run build
         env:
-          # Required for Next.js build
-          NEXT_PUBLIC_SUPABASE_URL: ${{ secrets.NEXT_PUBLIC_SUPABASE_URL }}
-          NEXT_PUBLIC_SUPABASE_ANON_KEY: ${{ secrets.NEXT_PUBLIC_SUPABASE_ANON_KEY }}
+          # Real values come from Vercel/Railway at deploy time.
+          # Fallback placeholders keep the CI smoke-build green when repo
+          # secrets are unset (Supabase client throws on empty URL/key).
+          NEXT_PUBLIC_SUPABASE_URL: ${{ secrets.NEXT_PUBLIC_SUPABASE_URL || 'https://placeholder.supabase.co' }}
+          NEXT_PUBLIC_SUPABASE_ANON_KEY: ${{ secrets.NEXT_PUBLIC_SUPABASE_ANON_KEY || 'placeholder-anon-key' }}
 
   deploy-preview:
     name: Deploy Preview (Vercel)
