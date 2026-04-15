@@ -1,6 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { createServerComponentClient } from '@supabase/auth-helpers-nextjs'
-import { cookies } from 'next/headers'
+import { getSupabaseServerClient } from '@/lib/supabase-server'
 import { Octokit } from '@octokit/rest'
 
 export async function GET(
@@ -8,7 +7,7 @@ export async function GET(
   { params }: { params: Promise<{ repositoryId: string }> }
 ) {
   try {
-    const supabase = createServerComponentClient({ cookies })
+    const supabase = await getSupabaseServerClient()
 
     // Get the authenticated user
     const { data: { session }, error: authError } = await supabase.auth.getSession()
@@ -133,7 +132,7 @@ export async function POST(
   { params }: { params: Promise<{ repositoryId: string }> }
 ) {
   try {
-    const supabase = createServerComponentClient({ cookies })
+    const supabase = await getSupabaseServerClient()
 
     // Get the authenticated user
     const { data: { session }, error: authError } = await supabase.auth.getSession()

@@ -1,6 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { createServerComponentClient } from '@supabase/auth-helpers-nextjs'
-import { cookies } from 'next/headers'
+import { getSupabaseServerClient } from '@/lib/supabase-server'
 
 export async function PATCH(
   request: NextRequest,
@@ -8,7 +7,7 @@ export async function PATCH(
 ) {
   const { id } = await params;
   try {
-    const supabase = createServerComponentClient({ cookies })
+    const supabase = await getSupabaseServerClient()
     const body = await request.json()
 
     // Get the authenticated user
@@ -99,7 +98,7 @@ export async function GET(
 ) {
   const { id } = await params;
   try {
-    const supabase = createServerComponentClient({ cookies })
+    const supabase = await getSupabaseServerClient()
 
     // Get the authenticated user
     const { data: { session }, error: authError } = await supabase.auth.getSession()
@@ -157,7 +156,7 @@ export async function DELETE(
 ) {
   const { id } = await params;
   try {
-    const supabase = createServerComponentClient({ cookies })
+    const supabase = await getSupabaseServerClient()
 
     // Get the authenticated user
     const { data: { session }, error: authError } = await supabase.auth.getSession()

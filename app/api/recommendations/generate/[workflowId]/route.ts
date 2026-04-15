@@ -1,6 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { createServerComponentClient } from '@supabase/auth-helpers-nextjs'
-import { cookies } from 'next/headers'
+import { getSupabaseServerClient } from '@/lib/supabase-server'
 
 // Recommendation generation logic
 function generateRecommendations(workflow: any, builds: any[], workflowContent?: string) {
@@ -166,7 +165,7 @@ export async function POST(
   { params }: { params: Promise<{ workflowId: string }> }
 ) {
   try {
-    const supabase = createServerComponentClient({ cookies })
+    const supabase = await getSupabaseServerClient()
     const { workflowId } = await params
 
     // Get the authenticated user
@@ -295,7 +294,7 @@ export async function GET(
   { params }: { params: Promise<{ workflowId: string }> }
 ) {
   try {
-    const supabase = createServerComponentClient({ cookies })
+    const supabase = await getSupabaseServerClient()
     const { workflowId } = await params
 
     // Get the authenticated user

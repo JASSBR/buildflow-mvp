@@ -223,7 +223,10 @@ export default function Dashboard() {
           <button
             onClick={() => supabase.auth.signInWithOAuth({
               provider: 'github',
-              options: { redirectTo: `${window.location.origin}/auth/callback` },
+              options: {
+                redirectTo: `${window.location.origin}/auth/callback`,
+                scopes: 'repo read:user user:email',
+              },
             })}
             className="bg-gray-900 text-white px-6 py-2 rounded-lg hover:bg-gray-800"
           >

@@ -1,51 +1,50 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { createServerComponentClient } from '@supabase/auth-helpers-nextjs'
-import { cookies } from 'next/headers'
 import { Octokit } from '@octokit/rest'
+import { getSupabaseServerClient } from '@/lib/supabase-server'
+
+async function getGithubToken(
+  supabase: Awaited<ReturnType<typeof getSupabaseServerClient>>,
+  userId: string
+): Promise<string | null> {
+  const { data } = await supabase
+    .from('profiles')
+    .select('github_token')
+    .eq('id', userId)
+    .maybeSingle()
+  return data?.github_token ?? null
+}
 
 export async function GET(_request: NextRequest) {
   try {
-    const supabase = createServerComponentClient({ cookies })
+    const supabase = await getSupabaseServerClient()
 
-    // Get the authenticated user
     const { data: { session }, error: authError } = await supabase.auth.getSession()
     if (authError || !session) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
     }
 
-    // Get user's GitHub token from profile
-    const { data: profile, error: profileError } = await supabase
-      .from('profiles')
-      .select('github_token')
-      .eq('id', session.user.id)
-      .single()
-
-    if (profileError || !profile?.github_token) {
-      return NextResponse.json({ error: 'GitHub token not found' }, { status: 400 })
+    const token = await getGithubToken(supabase, session.user.id)
+    if (!token) {
+      return NextResponse.json(
+        { error: 'GitHub token not found. Please sign in again to grant repository access.' },
+        { status: 400 }
+      )
     }
 
-    // Initialize Octokit with user's token
-    const octokit = new Octokit({
-      auth: profile.github_token,
-    })
+    const octokit = new Octokit({ auth: token })
 
-    // Fetch user's repositories from GitHub
     const { data: repos } = await octokit.rest.repos.listForAuthenticatedUser({
       sort: 'updated',
       per_page: 100,
     })
 
-    // Filter repositories that have GitHub Actions workflows
     const reposWithActions = []
-
     for (const repo of repos) {
       try {
-        // Check if repository has .github/workflows directory
         const { data: workflows } = await octokit.rest.actions.listRepoWorkflows({
           owner: repo.owner.login,
           repo: repo.name,
         })
-
         if (workflows.total_count > 0) {
           reposWithActions.push({
             github_repo_id: repo.id,
@@ -60,31 +59,22 @@ export async function GET(_request: NextRequest) {
           })
         }
       } catch {
-        // Skip repositories where we can't access workflows
         continue
       }
     }
 
-    return NextResponse.json({
-      success: true,
-      repositories: reposWithActions,
-    })
-
+    return NextResponse.json({ success: true, repositories: reposWithActions })
   } catch (error) {
     console.error('Error fetching GitHub repositories:', error)
-    return NextResponse.json(
-      { error: 'Failed to fetch repositories' },
-      { status: 500 }
-    )
+    return NextResponse.json({ error: 'Failed to fetch repositories' }, { status: 500 })
   }
 }
 
 export async function POST(request: NextRequest) {
   try {
-    const supabase = createServerComponentClient({ cookies })
+    const supabase = await getSupabaseServerClient()
     const body = await request.json()
 
-    // Get the authenticated user
     const { data: { session }, error: authError } = await supabase.auth.getSession()
     if (authError || !session) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
@@ -96,7 +86,6 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: 'Missing required fields' }, { status: 400 })
     }
 
-    // Insert or update repository in database
     const { data: repository, error: insertError } = await supabase
       .from('repositories')
       .upsert({
@@ -120,22 +109,12 @@ export async function POST(request: NextRequest) {
 
     if (insertError) {
       console.error('Error connecting repository:', insertError)
-      return NextResponse.json(
-        { error: 'Failed to connect repository' },
-        { status: 500 }
-      )
+      return NextResponse.json({ error: 'Failed to connect repository' }, { status: 500 })
     }
 
-    return NextResponse.json({
-      success: true,
-      repository,
-    })
-
+    return NextResponse.json({ success: true, repository })
   } catch (error) {
     console.error('Error connecting repository:', error)
-    return NextResponse.json(
-      { error: 'Failed to connect repository' },
-      { status: 500 }
-    )
+    return NextResponse.json({ error: 'Failed to connect repository' }, { status: 500 })
   }
 }
