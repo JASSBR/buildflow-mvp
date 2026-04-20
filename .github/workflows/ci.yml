@@ -84,12 +84,11 @@ jobs:
         uses: actions/checkout@v4
 
       - name: Deploy to Vercel (Preview)
-        uses: amondnet/vercel-action@v25
+        uses: vercel/action-deploy@v1
         with:
           vercel-token: ${{ secrets.VERCEL_TOKEN }}
           vercel-org-id: ${{ secrets.VERCEL_ORG_ID }}
           vercel-project-id: ${{ secrets.VERCEL_PROJECT_ID }}
-          scope: ${{ secrets.VERCEL_ORG_ID }}
 
   deploy-production:
     name: Deploy to Production
@@ -101,13 +100,12 @@ jobs:
         uses: actions/checkout@v4
 
       - name: Deploy to Vercel (Production)
-        uses: amondnet/vercel-action@v25
+        uses: vercel/action-deploy@v1
         with:
           vercel-token: ${{ secrets.VERCEL_TOKEN }}
           vercel-org-id: ${{ secrets.VERCEL_ORG_ID }}
           vercel-project-id: ${{ secrets.VERCEL_PROJECT_ID }}
           vercel-args: '--prod'
-          scope: ${{ secrets.VERCEL_ORG_ID }}
 
   deploy-railway-production:
     name: Deploy to Railway (Alternative)
